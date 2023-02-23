@@ -29,7 +29,7 @@ class OrderCreated implements Handler
             foreach ($body['line_items'] as $value) {
                 $lineItemDetails .= 'Item Title=> '. $value['title'] . ', Item Price=> ' . '(amount=>' . $value['price_set']['shop_money']['amount'] . ')' . ', (currency_code=>'. $value['price_set']['shop_money']['currency_code'] . ')';
             }
-            $saleDescription = 'Order Name=> ' . $body['name'] . ', Order ID=> ' . $body['name']. ', Line Items Information=> {'. $lineItemDetails . ' }';
+            $saleDescription = 'Order Name=> ' . $body['name'] . ', Order ID=> ' . $body['id']. ', Line Items Information=> {'. $lineItemDetails . ' }';
             logger('user_id=> '.$session_table[0]->user_id);
             $curl = curl_init();
             curl_setopt_array($curl, array(
