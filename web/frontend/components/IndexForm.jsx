@@ -55,9 +55,10 @@ export function IndexForm() {
                 if (ress.res === "success") {
                     sessionStorage.setItem("isMerchantLoggedIn", true);
                     sessionStorage.setItem("merchantBrandId", ress.data[0].id);
-                    setToastProps({ content: 'Login Successfully! 🎉' });
+                    
                     fetch(`/api/upadateUserId?marchantId=${ress.data[0].id}`).then(res => res.text()).then(data => {
                         console.log("cdjh--->", data);
+                        setToastProps({ content: 'Login Successfully! 🎉' });
                         navigate('/DashBoardPage');
                     })
                 }

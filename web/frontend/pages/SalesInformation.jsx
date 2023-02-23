@@ -2,8 +2,19 @@ import { ChoiceList, DatePicker, Card, Page, Layout, TextField, IndexTable, Filt
 import { useState, useCallback, useEffect } from 'react';
 import { TitleBar, useNavigate } from "@shopify/app-bridge-react";
 import HttpRequest from '../utility/HttpRequest';
+import createApp from '@shopify/app-bridge';
+import { Redirect } from '@shopify/app-bridge/actions';
+
+const config = {
+    apiKey: process.env.SHOPIFY_API_KEY,
+    host: new URLSearchParams(location.search).get("host"),
+    forceRedirect: true
+};
 
 export default function SalesInformation() {
+    const app = createApp(config);
+    const redirect = Redirect.create(app);
+
     const isMerchantLoggedIn = sessionStorage.getItem("isMerchantLoggedIn");
     const brandId = sessionStorage.getItem("merchantBrandId");
     const [SalesData, setSalesData] = useState([]);
@@ -49,7 +60,7 @@ export default function SalesInformation() {
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState('');
     const [mobile_no, setMobile] = useState('');
-    
+
 
     const [queryValue, setQueryValue] = useState('');
 
@@ -83,7 +94,7 @@ export default function SalesInformation() {
     const handleBalanceRemove = useCallback(() => setBalance(''), []);
     const handleTypeRemove = useCallback(() => setType(''), []);
     const handleMobileRemove = useCallback(() => setMobile(''), []);
-    
+
 
     const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
     const handleClearAll = useCallback(() => {
@@ -93,7 +104,7 @@ export default function SalesInformation() {
         handleBalanceRemove();
         handleTypeRemove();
         handleQueryValueRemove();
-    }, [handleQueryValueRemove, handleAmountRemove,handleMobileRemove, handleDateRemove, handleBalanceRemove, handleTypeRemove]);
+    }, [handleQueryValueRemove, handleAmountRemove, handleMobileRemove, handleDateRemove, handleBalanceRemove, handleTypeRemove]);
 
     const filters = [
         {
@@ -213,7 +224,12 @@ export default function SalesInformation() {
                 title="Sales Information"
                 primaryAction={{
                     content: "Support",
-                    onAction: () => window.open('mailto:pincode.app2022@gmail.com', '_blank'),
+                    onAction: () => {
+                        redirect.dispatch(Redirect.Action.REMOTE, {
+                            url: `https://mailto:connect@pincodecredits.com`,
+                            newContext: true,
+                        });
+                    },
                 }}
             />
             <Layout>
@@ -285,12 +301,12 @@ export default function SalesInformation() {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
-    
-        if (month.length < 2) 
+
+        if (month.length < 2)
             month = '0' + month;
-        if (day.length < 2) 
+        if (day.length < 2)
             day = '0' + day;
-    
+
         return [year, month, day].join('-');
     }
 }

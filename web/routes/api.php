@@ -36,7 +36,19 @@ Route::get('/', function () {
 });
 
 
-Route::get('/merchant_id', function (Request $request) {
+// Route::get('/shopDomain', function (Request $request) {
+//     /** @var AuthSession */
+//     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
+//     $client = new Rest($session->getShop(), $session->getAccessToken());
+//     $result = $client->get('shop');
+//     $res = $result->getDecodedBody();
+//     $domain = $res['shop']['domain'];
+//     return $domain;
+// })->middleware('shopify.auth');
+
+
+Route::get('/shopDomain', function (Request $request) {
+    logger(env('APP_ENV'));
     /** @var AuthSession */
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
 
@@ -44,14 +56,20 @@ Route::get('/merchant_id', function (Request $request) {
     $result = $client->get('shop');
     $res = $result->getDecodedBody();
     $domain = $res['shop']['domain'];
-    $des = DB::table("sessions")->where('shop', $domain)->get();
-    return response($res['shop']['domain']);
+    // $hostURI = $request->getQueryString();
+    // parse_str($hostURI, $output);
+
+    // // $des=DB::table("sessions")->where('shop',$domain)->get();
+    // // return response($res['shop']['domain']);
+    // $res = DB::table('sessions')->where('shop', $domain)->update(array('user_id' => $output['marchantId']));
+    return $domain;
 })->middleware('shopify.auth');
 
 
 
 Route::get('/upadateUserId', function (Request $request) {
     /** @var AuthSession */
+    
     $session = $request->get('shopifySession'); // Provided by the shopify.auth middleware, guaranteed to be active
 
     $client = new Rest($session->getShop(), $session->getAccessToken());
@@ -63,6 +81,6 @@ Route::get('/upadateUserId', function (Request $request) {
 
     // $des=DB::table("sessions")->where('shop',$domain)->get();
     // return response($res['shop']['domain']);
-    $res = DB::table('sessions')->where('shop', $res['shop']['domain'])->update(array('user_id' => $output['marchantId']));
+    $res = DB::table('sessions')->where('shop', $domain)->update(array('user_id' => $output['marchantId']));
     return $res;
 })->middleware('shopify.auth');

@@ -1,19 +1,20 @@
-import {
-  Card,
-  Page,
-  Layout,
-  TextContainer,
-  Image,
-  Stack,
-  Link,
-  Heading,
-  Frame,
-} from "@shopify/polaris";
-import { TitleBar, useNavigate } from "@shopify/app-bridge-react";
+import { Card, Page, Layout, TextContainer, Image, Stack, Link, Heading, Frame } from "@shopify/polaris";
 
-import { trophyImage } from "../assets";
+import { TitleBar, useAuthenticatedFetch, useNavigate } from "@shopify/app-bridge-react";
 
-import { ProductsCard, IndexForm, DashBoard } from '../components'
+import { ProductsCard, IndexForm, DashBoard } from '../components';
+
+import createApp from '@shopify/app-bridge';
+import { Redirect } from '@shopify/app-bridge/actions';
+import { useState } from "react";
+
+const config = {
+  apiKey: process.env.SHOPIFY_API_KEY,
+  host: new URLSearchParams(location.search).get("host"),
+  forceRedirect: true
+};
+const app = createApp(config);
+const redirect = Redirect.create(app);
 
 export default function HomePage() {
 
@@ -24,13 +25,39 @@ export default function HomePage() {
     return '';
   }
 
+  const [check, setCheck] = useState(false);
+  const privateFetch = useAuthenticatedFetch();
+  const goToEditor = () => {
+    setCheck(prevCheck => !prevCheck);
+    privateFetch('/api/shopDomain').then(r => r.text())
+      .then(shop_domain => {
+        setCheck(prevCheck => !prevCheck);
+        redirect.dispatch(Redirect.Action.REMOTE, {
+          url: `https://${shop_domain}/admin/themes/current/editor?context=apps`,
+          newContext: true,
+        });
+      });
+  };
+
   return (
     <Frame>
       <Page narrowWidth>
         <TitleBar title="Merchant Form" primaryAction={{
-          content: "Support",
-          onAction: () => window.open('mailto:pincode.app2022@gmail.com', '_blank'),
-        }} />
+          content: "Activate app from editor",
+          onAction: () => goToEditor(),
+          loading: check
+        }}
+          secondaryActions={[
+            {
+              content: 'Support',
+              onAction: () => {
+                redirect.dispatch(Redirect.Action.REMOTE, {
+                  url: `https://mailto:connect@pincodecredits.com`,
+                  newContext: true,
+                });
+              },
+            }
+          ]} />
         <Layout>
           <Layout.Section>
             <Card title="Authentication - Merchant Login" sectioned>

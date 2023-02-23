@@ -3,7 +3,19 @@ import { useState, useCallback, useEffect } from 'react';
 import { TitleBar, useNavigate } from "@shopify/app-bridge-react";
 import HttpRequest from '../utility/HttpRequest';
 
+import createApp from '@shopify/app-bridge';
+import { Redirect } from '@shopify/app-bridge/actions';
+
+const config = {
+    apiKey: process.env.SHOPIFY_API_KEY,
+    host: new URLSearchParams(location.search).get("host"),
+    forceRedirect: true
+};
+
 export default function WalletInformation() {
+    const app = createApp(config);
+    const redirect = Redirect.create(app);
+
     const isMerchantLoggedIn = sessionStorage.getItem("isMerchantLoggedIn");
     const brandId = sessionStorage.getItem("merchantBrandId");
     const [WalletData, setWalletData] = useState([]);
@@ -257,7 +269,12 @@ export default function WalletInformation() {
                 title="Wallet Information"
                 primaryAction={{
                     content: "Support",
-                    onAction: () => window.open('mailto:pincode.app2022@gmail.com', '_blank'),
+                    onAction: () => {
+                        redirect.dispatch(Redirect.Action.REMOTE, {
+                            url: `https://mailto:connect@pincodecredits.com`,
+                            newContext: true,
+                        });
+                    },
                 }}
             />
             <Layout>
