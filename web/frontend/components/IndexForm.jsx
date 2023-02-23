@@ -1,70 +1,68 @@
-import { Form, FormLayout, Toast, TextField, Button, Frame } from '@shopify/polaris';
+import { Form, TextContainer, FormLayout, Toast, TextField, Button, Frame } from '@shopify/polaris';
 import { useState, useCallback, useEffect } from 'react';
 import HttpRequest from '../utility/HttpRequest';
-import { useNavigate } from '@shopify/app-bridge-react';
+import { useAuthenticatedFetch, useNavigate } from '@shopify/app-bridge-react';
 
 export function IndexForm() {
-    const [active, setActive] = useState(false);
-    const [_isError, SetError] = useState(false);
-    const [ToastMessage, SetToast] = useState('');
+    const emptyToastProps = { content: null };
+    const [toastProps, setToastProps] = useState(emptyToastProps);
     const [value, setValue] = useState({
         email: '',
         name: '',
         password: '',
     })
     const navigate = useNavigate();
-    const [result, setResult] = useState(false)
 
-    // useEffect(() => {
-    //     if (result) {
-    //         window.location.reload(false)
-    //     }
-    // }, [result])
+    const [check, setCheck] = useState(false);
 
-    const toggleActive = useCallback(() => setActive((active) => !active), []);
 
-    const toastMarkup = active ? (
-        _isError ? <Toast content={ToastMessage} error duration={3000} onDismiss={toggleActive} />
-            : <Toast content={ToastMessage} duration={3000} onDismiss={toggleActive} />
-    ) : null;
+    const toastMarkup = toastProps.content && (
+        <Toast {...toastProps} onDismiss={() => setToastProps(emptyToastProps)} />
+    );
 
+    const fetch = useAuthenticatedFetch();
 
     const handleSubmit = async () => {
         let lastAtPos = value.email.lastIndexOf('@');
         let lastDotPos = value.email.lastIndexOf('.');
         if (!(lastAtPos < lastDotPos && lastAtPos > 0 && value.email.indexOf('@@') == -1 && lastDotPos > 2 && (value.email.length - lastDotPos) > 2)) {
-            SetError(_isError => true);
-            SetToast(ToastMessage => 'Please, Enter your valid Email!');
-            setActive((active) => !active);
-            return;
-            // setClasses(prevState => prevState + ' error');
+            setToastProps({ content: 'Please, Enter your valid Email!', error: true });
+            return
         } else if (value.password == '') {
-            SetError(_isError => true);
-            SetToast(ToastMessage => 'Please, Enter your password!');
-            setActive((active) => !active);
+            setToastProps({ content: 'Please, Enter your password!', error: true });
             return;
         } else {
+            setCheck(prevCheck => !prevCheck)
             const formData = new FormData();
             formData.append("email", value.email);
             var merchant_profile_by_email = await HttpRequest('https://pincodecredits.com/PincodeAdmin/API/V1/merchant_profile_by_email', 'POST', formData)
             var ress = merchant_profile_by_email[0];
             console.log('merchant_profile_by_email>>>', merchant_profile_by_email);
-            if (value.password != ress.data[0].password || ress.res !== "success") {
-                SetError(_isError => true);
-                SetToast(ToastMessage => 'Email or Password is incorrect! 😔');
-                setActive((active) => !active);
+            if (ress.res !== "success") {
+                setToastProps({ content: 'Email is incorrect! 😔', error: true });
                 sessionStorage.setItem("isMerchantLoggedIn", false);
                 sessionStorage.setItem("merchantBrandId", '');
+                setCheck(prevCheck => !prevCheck)
                 return;
+            } else {
+                if (value.password != ress.data[0].password) {
+                    setToastProps({ content: 'Password is incorrect! 😔', error: true });
+                    sessionStorage.setItem("isMerchantLoggedIn", false);
+                    sessionStorage.setItem("merchantBrandId", '');
+                    setCheck(prevCheck => !prevCheck)
+                    return;
+                }
+                if (ress.res === "success") {
+                    sessionStorage.setItem("isMerchantLoggedIn", true);
+                    sessionStorage.setItem("merchantBrandId", ress.data[0].id);
+                    setToastProps({ content: 'Login Successfully! 🎉' });
+                    fetch(`/api/upadateUserId?marchantId=${ress.data[0].id}`).then(res => res.text()).then(data => {
+                        console.log("cdjh--->", data);
+                        navigate('/DashBoardPage');
+                    })
+                }
             }
-            if (ress.res === "success") {
-                sessionStorage.setItem("isMerchantLoggedIn", true);
-                sessionStorage.setItem("merchantBrandId", ress.data[0].id);
-                SetError(_isError => false);
-                SetToast(ToastMessage => 'Login Successfully! 🎉');
-                setActive((active) => !active);
-            }
-            navigate('/DashBoardPage');
+
         }
     };
 
@@ -106,7 +104,9 @@ export function IndexForm() {
                     requiredIndicator
                 />
 
-                <Button primary submit>Submit</Button>
+                <TextContainer>Email us at connect@pincodecredits.com to get the login credentials.</TextContainer>
+
+                <Button primary submit loading={check}>Submit</Button>
             </FormLayout>
         </Form>
     );

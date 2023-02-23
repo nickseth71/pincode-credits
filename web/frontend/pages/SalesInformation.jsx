@@ -185,7 +185,7 @@ export default function SalesInformation() {
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(search(SalesData));
     const rowMarkup = search(SalesData).map(
-        ({ id, type, txn_id, sale_amount, commision_per, commision_amt, tax_per, tax_amt, sale_description, created_at }, index) => (
+        ({ id, userid, txn_id, sale_amount, commision_per, commision_amt, tax_per, tax_amt, sale_description, created_at }, index) => (
             <IndexTable.Row
                 id={id}
                 key={id}
@@ -193,7 +193,7 @@ export default function SalesInformation() {
                 position={index}
             >
                 <IndexTable.Cell>{index + 1}</IndexTable.Cell>
-                <IndexTable.Cell>{type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()}</IndexTable.Cell>
+                <IndexTable.Cell>{userid.charAt(0).toUpperCase() + userid.slice(1).toLowerCase()}</IndexTable.Cell>
                 <IndexTable.Cell>{txn_id}</IndexTable.Cell>
                 <IndexTable.Cell>{txn_id}</IndexTable.Cell>
                 <IndexTable.Cell>{sale_amount}</IndexTable.Cell>

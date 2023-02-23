@@ -227,7 +227,7 @@ export default function WalletInformation() {
         } else if (queryValue == '' && ifAny) {
             return data.filter((item) => (getConditionVal(item['amount'], amount, Aselected) && getConditionVal(item['balance'], balance, Bselected) && item['type'].toLowerCase().includes(type) && item['created_at'].toLowerCase().includes(dDate)))
         } else {
-            return data.filter((item) => keys.some((key) => item[key].toLowerCase().includes(queryValue)))
+            return data.filter((item) => keys.some((key) => item[key].toLowerCase().includes(queryValue.toLowerCase())))
         }
     }
 

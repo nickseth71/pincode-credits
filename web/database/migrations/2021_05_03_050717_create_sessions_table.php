@@ -19,6 +19,7 @@ class CreateSessionsTable extends Migration
             $table->string('shop')->nullable(false);
             $table->boolean('is_online')->nullable(false);
             $table->string('state')->nullable(false);
+            $table->string('merchant__id')->nullable(true);
             $table->timestamps();
         });
     }
