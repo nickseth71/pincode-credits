@@ -57,7 +57,7 @@ export default function SalesInformation() {
 
     const [type, setType] = useState('');
     const [balance, setBalance] = useState('');
-    const [amount, setAmount] = useState('');
+    const [user_name, setUserName] = useState('');
     const [date, setDate] = useState('');
     const [mobile_no, setMobile] = useState('');
 
@@ -69,27 +69,12 @@ export default function SalesInformation() {
         setQueryValue('');
     }, [], []);
 
-    const handleTypeChange = useCallback((value) => {
-        setType(value);
+    const handleUserNameChange = useCallback((value) => {
+        setUserName(value);
         setQueryValue('');
     }, [], []);
 
-    const handleBalanceChange = useCallback((value) => {
-        setBalance(value);
-        setQueryValue('');
-    }, [], []);
-
-    const handleAmountChange = useCallback((value) => {
-        setAmount(value);
-        setQueryValue('');
-    }, [], []);
-
-    const handleDateChange = useCallback((value) => {
-        setDate(value);
-        setQueryValue('');
-    }, [], []);
-
-    const handleAmountRemove = useCallback(() => setAmount(''), []);
+    const handleUserNameRemove = useCallback(() => setUserName(''), []);
     const handleDateRemove = useCallback(() => setDate(''), []);
     const handleBalanceRemove = useCallback(() => setBalance(''), []);
     const handleTypeRemove = useCallback(() => setType(''), []);
@@ -99,12 +84,12 @@ export default function SalesInformation() {
     const handleQueryValueRemove = useCallback(() => setQueryValue(''), []);
     const handleClearAll = useCallback(() => {
         handleMobileRemove();
-        handleAmountRemove();
+        handleUserNameRemove();
         handleDateRemove();
         handleBalanceRemove();
         handleTypeRemove();
         handleQueryValueRemove();
-    }, [handleQueryValueRemove, handleAmountRemove, handleMobileRemove, handleDateRemove, handleBalanceRemove, handleTypeRemove]);
+    }, [handleQueryValueRemove, handleUserNameRemove, handleMobileRemove, handleDateRemove, handleBalanceRemove, handleTypeRemove]);
 
     const filters = [
         {
@@ -124,13 +109,13 @@ export default function SalesInformation() {
             shortcut: true
         },
         {
-            key: 'amount',
+            key: 'user_name',
             label: 'User Name',
             filter: (
                 <TextField
                     label="User Name"
-                    value={amount}
-                    onChange={handleAmountChange}
+                    value={user_name}
+                    onChange={handleUserNameChange}
                     autoComplete="off"
                     labelHidden
                 />
@@ -158,12 +143,12 @@ export default function SalesInformation() {
 
 
     const appliedFilters = [];
-    if (!isEmpty(amount)) {
-        const key = 'amount';
+    if (!isEmpty(user_name)) {
+        const key = 'user_name';
         appliedFilters.push({
             key,
-            label: disambiguateLabel(key, amount),
-            onRemove: handleAmountRemove,
+            label: disambiguateLabel(key, user_name),
+            onRemove: handleUserNameRemove,
         });
     }
     if (!isEmpty(mobile_no)) {
@@ -175,19 +160,15 @@ export default function SalesInformation() {
         });
     }
 
-    const keys = ["amount", "balance", "type", "remark", "created_at"];
-    let ifAny = (amount != '' || balance != '' || type != '' || date != '');
+    const keys = ["userid", "mobile"];
+    let ifAny = (user_name != '' || mobile_no != '');
     const search = (data) => {
-        if (queryValue == '' && amount == '' && balance == '' && type == '' && date != '') {
-            return data.filter((item) => (item['created_at'].toLowerCase().includes(date)));
-        } else if (queryValue == '' && amount == '' && balance == '' && type != '' && date == '') {
-            return data.filter((item) => (item['type'].toLowerCase().includes(type)));
-        } else if (queryValue == '' && amount == '' && balance != '' && type == '' && date == '') {
-            return data.filter((item) => (item['balance'].toLowerCase().includes(balance)));
-        } else if (queryValue == '' && amount != '' && balance == '' && type == '' && date == '') {
-            return data.filter((item) => (item['amount'].toLowerCase().includes(amount)));
+        if (queryValue == '' && user_name != '' && mobile_no == '') {
+            return data.filter((item) => (item['userid'].toLowerCase().includes(user_name)));
+        } else if (queryValue == '' && user_name == '' && mobile_no != '') {
+            return data.filter((item) => (item['mobile'].toLowerCase().includes(mobile_no)));
         } else if (queryValue == '' && ifAny) {
-            return data.filter((item) => (item['amount'].toLowerCase().includes(amount) && item['balance'].toLowerCase().includes(balance) && item['type'].toLowerCase().includes(type) && item['created_at'].toLowerCase().includes(date)))
+            return data.filter((item) => (item['userid'].toLowerCase().includes(user_name) && item['mobile'].toLowerCase().includes(mobile_no)))
         } else {
             return data.filter((item) => keys.some((key) => item[key].toLowerCase().includes(queryValue)))
         }
@@ -196,7 +177,7 @@ export default function SalesInformation() {
     const { selectedResources, allResourcesSelected, handleSelectionChange } =
         useIndexResourceState(search(SalesData));
     const rowMarkup = search(SalesData).map(
-        ({ id, userid, txn_id, sale_amount, commision_per, commision_amt, tax_per, tax_amt, sale_description, created_at }, index) => (
+        ({ id, userid, txn_id, mobile, sale_amount, commision_per, commision_amt, tax_per, tax_amt, sale_description, created_at }, index) => (
             <IndexTable.Row
                 id={id}
                 key={id}
@@ -205,7 +186,7 @@ export default function SalesInformation() {
             >
                 <IndexTable.Cell>{index + 1}</IndexTable.Cell>
                 <IndexTable.Cell>{userid.charAt(0).toUpperCase() + userid.slice(1).toLowerCase()}</IndexTable.Cell>
-                <IndexTable.Cell>{txn_id}</IndexTable.Cell>
+                <IndexTable.Cell>{mobile}</IndexTable.Cell>
                 <IndexTable.Cell>{txn_id}</IndexTable.Cell>
                 <IndexTable.Cell>{sale_amount}</IndexTable.Cell>
                 <IndexTable.Cell>{commision_per}</IndexTable.Cell>
@@ -280,8 +261,8 @@ export default function SalesInformation() {
     );
     function disambiguateLabel(key, value) {
         switch (key) {
-            case 'amount':
-                return `Amount: ${value}`;
+            case 'user_name':
+                return `Name: ${value}`;
             case 'mobile_no':
                 return `Mobile: ${value}`;
             default:
