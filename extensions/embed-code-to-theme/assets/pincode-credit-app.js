@@ -25,6 +25,7 @@ if (pindoceCreditsUserId != null) {
                 input.setAttribute("value", userid);
                 input.setAttribute("sgpc_user", "");
                 cartForm.appendChild(input);
+                console.log('Input Added');
             });
             clearInterval(interval);
         }
