@@ -7,7 +7,7 @@ const params = new Proxy(new URLSearchParams(window.location.search), {
 });
 const userid = params.userid;
 const utm_source = (params.utm_source).toUpperCase();
-alert(userid + '<<>>' + utm_source);
+alert(userid + '<<>>' + utm_source); 
 (utm_source === 'PINCODE_CREDITS') && sessionStorage.setItem("pindoceCreditsUserId", userid);
 let pindoceCreditsUserId = sessionStorage.getItem("pindoceCreditsUserId") || null;
 if (pindoceCreditsUserId != null) {
