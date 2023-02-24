@@ -19,18 +19,25 @@ class OrderCreated implements Handler
         logger($shop);
         logger($body);
         $total_price = $body['total_price'] ?? null;
-        $userId = $body['note_attributes']['pindoceCreditsUserId'] ?? null;
-        logger('total_price=>'.$total_price);
-        logger('userId=>'.$userId);
+        $userIdArray = $body['note_attributes'] ?? [];
+        $userId = null;
+        foreach ($userIdArray as $value) {
+            if ($value['name'] === 'pindoceCreditsUserId') {
+                $userId = $value['value'];
+                break;
+            }
+        }
+        logger('total_price=>' . $total_price);
+        logger('userId=>' . $userId);
 
         if ($userId != null) {
-            $session_table = DB::table("sessions")->where('shop',$shop)->get();
+            $session_table = DB::table("sessions")->where('shop', $shop)->get();
             $lineItemDetails = '';
             foreach ($body['line_items'] as $value) {
-                $lineItemDetails .= 'Item Title=> '. $value['title'] . ', Item Price=> ' . '(amount=>' . $value['price_set']['shop_money']['amount'] . ')' . ', (currency_code=>'. $value['price_set']['shop_money']['currency_code'] . ')';
+                $lineItemDetails .= '"Item Title"=> ' . $value['title'] . ', "Item Price"=> ' . '("amount"=>' . $value['price_set']['shop_money']['amount'] . ')' . ', ("currency_code"=>' . $value['price_set']['shop_money']['currency_code'] . ')';
             }
-            $saleDescription = 'Order Name=> ' . $body['name'] . ', Order ID=> ' . $body['id']. ', Line Items Information=> {'. $lineItemDetails . ' }';
-            logger('user_id=> '.$session_table[0]->user_id);
+            $saleDescription = '"Order Name"=> ' . $body['name'] . ', "Order ID"=> ' . $body['id'] . ', "Line Items Information"=> { ' . $lineItemDetails . ' }';
+            logger('user_id=> ' . $session_table[0]->user_id);
             $curl = curl_init();
             curl_setopt_array($curl, array(
                 CURLOPT_URL => 'https://pincodecredits.com/PincodeAdmin/API/V1/GetUserShopping',
@@ -51,7 +58,7 @@ class OrderCreated implements Handler
             ));
             $response = curl_exec($curl);
             curl_close($curl);
-            logger('response=> '.$response);
+            logger('response=> ' . $response);
         }
     }
 }
