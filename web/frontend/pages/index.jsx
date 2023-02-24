@@ -1,8 +1,10 @@
 import { Card, Page, Layout, TextContainer, Image, Stack, Link, Heading, Frame } from "@shopify/polaris";
 
-import { TitleBar, useAuthenticatedFetch, useNavigate } from "@shopify/app-bridge-react";
+import { TitleBar, useNavigate } from "@shopify/app-bridge-react";
 
 import { ProductsCard, IndexForm, DashBoard } from '../components';
+
+import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
 import createApp from '@shopify/app-bridge';
 import { Redirect } from '@shopify/app-bridge/actions';

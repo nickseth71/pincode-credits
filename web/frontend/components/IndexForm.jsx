@@ -1,7 +1,8 @@
 import { Form, TextContainer, FormLayout, Toast, TextField, Button, Frame } from '@shopify/polaris';
 import { useState, useCallback, useEffect } from 'react';
 import HttpRequest from '../utility/HttpRequest';
-import { useAuthenticatedFetch, useNavigate } from '@shopify/app-bridge-react';
+import { useNavigate } from '@shopify/app-bridge-react';
+import { useAppQuery, useAuthenticatedFetch } from "../hooks";
 
 export function IndexForm() {
     const emptyToastProps = { content: null };
