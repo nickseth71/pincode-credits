@@ -31,6 +31,7 @@ return array(
     'App\\Lib\\Handlers\\Gdpr\\CustomersDataRequest' => $baseDir . '/app/Lib/Handlers/Gdpr/CustomersDataRequest.php',
     'App\\Lib\\Handlers\\Gdpr\\CustomersRedact' => $baseDir . '/app/Lib/Handlers/Gdpr/CustomersRedact.php',
     'App\\Lib\\Handlers\\Gdpr\\ShopRedact' => $baseDir . '/app/Lib/Handlers/Gdpr/ShopRedact.php',
+    'App\\Lib\\Handlers\\OrderCreated' => $baseDir . '/app/Lib/Handlers/OrderCreated.php',
     'App\\Lib\\ProductCreator' => $baseDir . '/app/Lib/ProductCreator.php',
     'App\\Lib\\TopLevelRedirection' => $baseDir . '/app/Lib/TopLevelRedirection.php',
     'App\\Models\\Session' => $baseDir . '/app/Models/Session.php',

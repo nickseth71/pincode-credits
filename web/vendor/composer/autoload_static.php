@@ -329,8 +329,8 @@ class ComposerStaticInitf403491d7831ab445383e5e3222b48d5
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -423,8 +423,8 @@ class ComposerStaticInitf403491d7831ab445383e5e3222b48d5
         ),
         'Fruitcake\\Cors\\' => 
         array (
-            0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
-            1 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            0 => __DIR__ . '/..' . '/fruitcake/laravel-cors/src',
+            1 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
         'Firebase\\JWT\\' => 
         array (
@@ -556,6 +556,7 @@ class ComposerStaticInitf403491d7831ab445383e5e3222b48d5
         'App\\Lib\\Handlers\\Gdpr\\CustomersDataRequest' => __DIR__ . '/../..' . '/app/Lib/Handlers/Gdpr/CustomersDataRequest.php',
         'App\\Lib\\Handlers\\Gdpr\\CustomersRedact' => __DIR__ . '/../..' . '/app/Lib/Handlers/Gdpr/CustomersRedact.php',
         'App\\Lib\\Handlers\\Gdpr\\ShopRedact' => __DIR__ . '/../..' . '/app/Lib/Handlers/Gdpr/ShopRedact.php',
+        'App\\Lib\\Handlers\\OrderCreated' => __DIR__ . '/../..' . '/app/Lib/Handlers/OrderCreated.php',
         'App\\Lib\\ProductCreator' => __DIR__ . '/../..' . '/app/Lib/ProductCreator.php',
         'App\\Lib\\TopLevelRedirection' => __DIR__ . '/../..' . '/app/Lib/TopLevelRedirection.php',
         'App\\Models\\Session' => __DIR__ . '/../..' . '/app/Models/Session.php',
